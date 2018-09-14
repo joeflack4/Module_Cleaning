@@ -4,8 +4,7 @@
 *  PURPOSE:		Monitor key female variables in Global Gag Rule study
 *  CREATED:		Suzanne Bell (suzannebell@jhu.edu)
 *  CREATED:		April 16, 2018 by Suzanne Bell (suzannebell@jhu.edu)
-*  DATA OUT:	
-*  UPDATES:		
+*  DATA OUT:	CCRX_HHQFQ_Errors_$date.xlsx		
 *
 ********************************************************************************
 
@@ -24,7 +23,7 @@ gen NRDNKnsum_abt=1 if nsum_abt==-88 | nsum_abt==-99
 gen NRself_abt=1 if self_abt_yn==-99
 collapse (sum) NR* totalcompleted total_friend total_f1 total_nsum if totalcompleted==1, by (RE $GeoID) 
 
-* REVISION v3 25Apr2018 SOB: Made abortion checks percents instead of counts
+*Made abortion checks percents instead of counts
 gen NRDNKfriends_per=NRDNKfriends/total_friends *100
 gen NRDNKfriend1_abt_per= NRDNKfriend1_abt/total_f1 *100
 gen NRDNKnsum_prompt_per= NRDNKnsum_prompt/total_nsum *100
