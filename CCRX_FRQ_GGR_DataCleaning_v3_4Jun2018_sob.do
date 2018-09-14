@@ -5,9 +5,6 @@
 *  CREATED:		Andrea Rowan - IC (arowan44@gmail.com)
 *  DATA IN:		CCRX_Female_Questionnaire_v#_results.csv
 *  DATA OUT:	N/A
-*  UPDATES:		2018-06-01 by Suzanne Bell (v3)
-*					Added rename, label, and destring code for remaining variables
-*					Made code generic with country specific secti ons
 *
 ********************************************************************************
 
@@ -250,13 +247,6 @@ capture encode `var', gen(`var'v2) lab(region_list)
 
 label define region_list 1 "Central" 2 "Eastern" 3 "Northern" 4 "Western" ///
 -88 "-88" -99 "-99", replace
-
-* Encode district geographic variable?
-/*
-foreach var of varlist friend1_district friend2_district friend3_district {
-encode `var', gen(`var'v2)
-}
-*/
 
 * Label education variables 
 capture label define school_list 1 never 2 primary 3 o 4 a 5 tertiary ////
