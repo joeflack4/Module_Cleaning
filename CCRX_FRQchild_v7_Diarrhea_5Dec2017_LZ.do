@@ -5,10 +5,7 @@
 *  CREATED:		Linnea Zimmerman (lzimme12@jhu.edu)
 *  DATA IN:		CCRX_Combined_$date.dta
 *  DATA OUT:	CCRX_Combined_$date.dta
-*  UPDATES:		
-*            6June2017 HC made changes in reshape line and merging sections
-*			REVISION V7 corrected previous changes and create child_birthday from 
-			reformatted date variables.
+* 
 *******************************************************************************/
 
 set more off
@@ -63,42 +60,14 @@ duplicates drop KEY, force
 save, replace
 
 
-*child_feces is multi-select, need to change to binary
-/*REVISION v7 Changed to single select.  Dont need binary
-gen child_feces_burn=0 if child_feces!=""
-replace child_feces_burn=1 if (regexm(child_feces, ["burn"]))
-
-gen child_feces_latdisp=0 if child_feces!=""
-replace child_feces_latdisp=1 if (regexm(child_feces, ["latrine_disposal"]))
-
-gen child_feces_bury=0 if child_feces!=""
-replace child_feces_bury=1 if (regexm(child_feces, ["bury"]))
-
-gen child_feces_garbage=0 if child_feces!=""
-replace child_feces_garbage=1 if (regexm(child_feces, ["garbage"]))
-
-gen child_feces_manure=0 if child_feces!=""
-replace child_feces_manure=1 if (regexm(child_feces, ["manure"]))
-
-gen child_feces_leave=0 if child_feces!=""
-replace child_feces_leave=1 if (regexm(child_feces, ["leave"]))
-
-gen child_feces_waste_water=0 if child_feces!=""
-replace child_feces_waste_water=1 if (regexm(child_feces, ["waste_water"]))
-
-gen child_feces_latused=0 if child_feces!=""
-replace child_feces_latused=1 if (regexm(child_feces, ["latrine_used"]))
-*/
-
+*Encode child_feces
 label define child_feces_list 1 "burn" 2 "latrine_disposal" 3 "bury" 4 "garbage" ///
 5 "manure" 6 "leave" 7 "waste_water" 8 "latrine_used"
 encode child_feces, gen(child_fecesv2) lab(child_feces_list)
 drop child_feces
 rename child_fecesv2 child_feces
 
-*REVISION v7 child birthday needs to be reformatted into MDY (eg Jan 1, 2017)
-*and date variables dropped
-
+*Reformat child birthday to MDY
 foreach date in CBcb {
 replace `date'_y=subinstr(`date'_y, "Jan", "Feb", .) if `date'_m=="1"
 replace `date'_y=subinstr(`date'_y, "Jan", "Mar", .) if `date'_m=="2"
@@ -127,16 +96,13 @@ bysort PARENT_KEY: gen totalchildODK=_N
 bysort PARENT_KEY: gen childno=_n
 
 capture drop count
-//REVISION: SJ v7, have to drop KEY_first before reshaping
 capture drop KEY_
 
 reshape wide child*_ diarrhea_, i(PARENT_KEY) j(childno)
 rename PARENT_KEY FQmetainstanceID
 duplicates report FQmetainstanceID
-//REVISION: SJ v7, use tempfile instead of real dataset
 tempfile child_wide
 save `child_wide', replace
-*save `CCRX'_FQchild_WIDE_$date.dta, replace
 
 use `CCRX'_Combined_$date.dta
 
@@ -152,9 +118,6 @@ restore
 use `CCRX'_Combined_$date.dta
 merge m:m FQmetainstanceID using `temp', nogen force
 
-
-*merge 1:m FQmetainstanceID using `child_wide', gen(childmerge)
-*drop if childmerge==2
 
 save `CCRX'_Combined_$date.dta, replace
 	
