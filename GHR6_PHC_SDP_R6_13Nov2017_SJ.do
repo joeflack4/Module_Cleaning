@@ -173,7 +173,7 @@ capture encode supervisor_visit, gen(supervisor_visitn2) lab(supervisor_list)
 label define supervisor_list -88 "Don't know" -99 "No response" ///
 0 "Never external supervision" 1 "Within the past 6 months" 2 "More than 6 months ago", replace
 
-* Handwashing stations observation //SJ: option wording has changed in KER5
+* Handwashing stations observation 
 capture rename handwashing_observations handwashing_observations_staff
 capture tostring handwashing_observations_staff, replace
 gen soap_present=regexm(handwashing_observations_staff, "soap") if handwashing_observations_staff~=""
@@ -192,19 +192,8 @@ encode SDP_result, gen(SDP_resultn2) lab(SDP_result_list)
 label define SDP_result_list 1 "Completed" 2 "Not at facility" ///
 3 "Postponed" 4 "Refused" 5 "Partly completed" 6 "Other", replace
 
-
-* Rename CHW variables in PHC so that it won't be confused with those in the core module
-*rename community_health_workers phc_chw
-*rename num_health_workers phc_num_chw
-
-/* PHC list different from R5, below is the list for R5
-label define positions_list 1 "owner" 2 "partner" 3 "admin" 4 "director" 5 "super" 6 "matron" ///
- 8 "pa" 9 "nurse" 10 "staff" 96 "other" -99 "-99"
-encode position, gen(positionn2) lab(positions_list)
-label define positions_list 1 "Owner" 2 "Managing partner (private)" 3 "Administrator" 4 "Medical Director" 5 "Superintendent" 6 "Matron" ///
-8 "Physician assistant in charge" 9 "Community health nurse" 10 "Staff" 96 "Other" -99 "-99", replace
-*/
-* This is R6 position list
+* Position List
+*UPDATE BY COUNTRY
 label define positions_list 1 "owner" 2 "partner" 3 "admin" 4 "director" 5 "super" 6 "matron" ///
  8 "pa" 9 "nurse" 11 "chn" -99 "-99"
 encode position, gen(positionn2) lab(positions_list)
@@ -254,30 +243,17 @@ encode antibiotics, gen(antibioticsn2) lab(antibiotics_list)
 label define say_list 1 "ghana" 2 "director" 3 "committee" 4 "doctors" 5 "community" 96 "other" -99 "-99"
 encode drugs_say, gen(drugs_sayn2) lab(say_list)
 
-*label define lot_3_down_list 1 "none" 2 "little" 3 "lot" -99 "-99"
-*encode drugs_say, gen(drugs_sayn2) lab(lot_3_down_list)
-
 encode recruitment_say, gen(recruitment_sayn2) lab(say_list)
-*encode recruitment_say, gen(recruitment_sayn2) lab(lot_3_down_list)
 encode promoted_say, gen(promoted_sayn2) lab(say_list)
-*encode promoted_say, gen(promoted_sayn2) lab(lot_3_down_list)
 encode discipline_say, gen(discipline_sayn2) lab(say_list)
-*encode discipline_say, gen(discipline_sayn2) lab(lot_3_down_list)
 encode paint_say, gen(paint_sayn2) lab(say_list)
-*encode paint_say, gen(paint_sayn2) lab(lot_3_down_list)
 encode absence_say, gen(absence_sayn2) lab(say_list)
-*encode absence_say, gen(absence_sayn2) lab(lot_3_down_list)
 encode priorities_say, gen(priorities_sayn2) lab(say_list)
-*encode priorities_say, gen(priorities_sayn2) lab(lot_3_down_list)
 encode discretionary_say, gen(discretionary_sayn2) lab(say_list)
-*encode discretionary_say, gen(discretionary_sayn2) lab(lot_3_down_list)
 
 label define who_quality_list 1 "none" 2 "leader" 3 "specific" 4 "shared" 5 "external" 96 "other" -99 "-99"
 encode who_quality, gen(who_qualityn2) lab(who_quality_list)
 
-*changed in R6 to 4 down list
-*label define agree_5_down_list 1 "much_agree" 2 "agree" 3 "neutral" 4 "disagree" 5 "much_disagree" -88 "-88" -99 "-99"
-*encode monitor_agree, gen(monitor_agreen2) lab(agree_5_down_list)
 label define agree_4_down_list 1 "much_agree" 2 "agree" 4 "disagree" 5 "much_disagree" -99 "-99"
 encode monitor_agree_cc, gen(monitor_agree_ccn2) lab(agree_4_down_list)
 encode sdp_target_agree, gen(sdp_target_agreen2) lab(agree_4_down_list)
@@ -290,7 +266,6 @@ encode regular_attend, gen(regular_attendn2) lab(yn_not_held_list)
 label define freq_5_down_list 1 "always" 2 "often" 3 "some" 4 "rare" 5 "never" -99 "-99"
 encode opinion_drive, gen(opinion_driven2) lab(freq_5_down_list)
 
-***added on R6
 label define freq_6_down_list 1 "day" 2 "week" 3 "month" 4 "quarter" 5 "halfyear" 6 "year" -88 "-88" -99 "-99"
 encode data_report_freq, gen(data_report_freqn2) lab(freq_6_down_list)
 encode performance_fb_freq, gen(performance_fb_freqn2) lab(freq_6_down_list)
@@ -307,14 +282,12 @@ encode case_review_freq, gen(case_review_freqn2) lab(freq_5_down3_list)
 label define freq_5_up2_list 1 "never" 2 "rare" 3 "some" 4 "often" 5 "always" -88 "-88" -99 "-99"
 encode late_payments, gen(late_paymentsn2) lab(freq_5_up2_list)
 
-
 *Rename typical_day vars
 rename typical_day_tot temp_typdaytot
 rename typical_day* *
 rename temp_typdaytot typical_day_tot
  
 *Rename and encode equipment function vars
-*rename ads* *
 label define full_oruna_list 1 "observed" 2 "reported" -77 "na" -99 "-99" 
 encode adult_scale, gen(adult_scalen2) lab(full_oruna_list)
 encode sdp_goals_obs, gen(sdp_goals_obsn2) lab(full_oruna_list)
@@ -323,30 +296,23 @@ encode sdp_improve_obs, gen(sdp_improve_obsn2) lab(full_oruna_list)
 label define yes_no_function_list 0 "no" 1 "yes" -77 "-77" -99 "-99"
 encode adult_scale_func, gen(adult_scale_funcn2) lab(yes_no_function_list)
 
-*rename chs* *
 encode child_scale, gen(child_scalen2) lab(full_oruna_list)
 encode child_scale_func, gen(child_scale_funcn2) lab(yes_no_function_list)
 
-*rename spg* *
 encode sphyg, gen(sphygn2) lab(full_oruna_list)
 encode sphyg_func, gen(sphyg_funcn2) lab(yes_no_function_list)
 
-*rename thr* *
 encode thermom, gen(thermomn2) lab(full_oruna_list)
 encode thermom_func, gen(thermom_funcn2) lab(yes_no_function_list)
 
-*rename sth* *
 encode steth, gen(stethn2) lab(full_oruna_list)
 encode steth_func, gen(steth_funcn2) lab(yes_no_function_list)
-
-*encode non_elec_equip, gen(non_elec_equipn2) lab(full_oruna_list)
 
 encode fees_displayed, gen(fees_displayedn2) lab(full_oruna_list)
 
 label define full_oruna_dnk_list 1 "observed" 2 "reported" -77 "na" -88 "-88" -99 "-99"
 encode books_track, gen(books_trackn2) lab(full_oruna_dnk_list)
 
-***New PHC variables added on R6
 foreach var in data_admin dhims2_use dhims2_staff data_staff data_report performance_fb data_support {
 encode `var',gen(`var'n2) lab(yes_no_dnk_nr_list)
 }
@@ -429,23 +395,6 @@ order chw_outreach_anc-chw_outreach_out, after(chw_outreach)
 forval x=1/`y' {
 drop chw_outreach_`x'
 }
-
-/*
-split cadres_reviewed, gen(cadres_reviewed_)
-local y=r(nvars)
-foreach var in nurse doctor disease education nutrition lab pharm admin manager chw midwife {
-gen cadres_reviewed_`var'=0 if cadres_reviewed!="" 
-forval x=1/`y'{
-replace cadres_reviewed_`var'=1 if cadres_reviewed_`x'=="`var'"
-label val cadres_reviewed_`var' yes_no_dnk_nr_list
-label var cadres_reviewed_`var' "`var' receive performance reviews"
-}
-}
-order cadres_reviewed_nurse-cadres_reviewed_midwife, after(cadres_reviewed)
-forval x=1/`y' {
-drop cadres_reviewed_`x'
-}
-*/
 
 split criteria_detail, gen(criteria_detail_)
 local y=r(nvars)
@@ -601,8 +550,6 @@ forval x=1/`y' {
 drop internal_funds_`x'
 }
 
-
-***Addded in R6
 capture {
 split performance_fb_day, gen(performance_fb_day_)
 local y=r(nvars)
@@ -770,12 +717,10 @@ label var separate_opd "Facility has outpatient dept"
 label var defined_pop "Facility accountable for certain population"
 label var pop_count "How many people"
 label var pop_defined "How you know who this population is"
-*label var pop_defined_other "Please specify other"
 label var measure_coverage "Measure coverage of key population indicators"
 label var tracking "Facility track common conditions"
 label var disease "Report new disease outbreaks"
 label var methods_used "Methods used to get information on outcomes"
-*label var methods_used_other "Please specify other"
 label var results_collected "Results of outcomes shared with staffs through any means"
 label var community_health_workers "Facility provides support to CHWs"
 label var num_health_workers "Number of CHWs supported by this facility"
@@ -788,13 +733,9 @@ label var register_permission "Permission to see register for No. of patients ye
 label var register_count "No. of visits in the register yesterday"
 label var register_estimate "Estimate of No. of patients yesterday"
 label var review_performance "Supervisors review staff performance in last 12 months"
-*label var cadres_reviewed "Categories of staff receive performance reviews"
-*label var cadres_reviewed_other "Please specify other"
 label var criteria "Have criteria to evaluate staff performance"
 label var criteria_detail "Criteria used"
-*label var criteria_detail_other "Please specify other"
 label var supervision "Main method of supervision"
-*label var supervision_other "Please specify other"
 label var trainings "Offer trainings to staffs"
 label var decide_training "Methods to decide who have access to training"
 label var left "No. of clinical staff left in last 6 months"
@@ -832,20 +773,13 @@ label var who_quality "Who is responsible for quality improvement"
 label var statistics "Discussed routine service statistics with staffs in the past 12 months"
 label var monitor_agree_cc "Data improves service delivery"
 label var cab_meet "Has a community advisory board that meets regularly"
-***newly added in R6
 label var cab_meet_freq_units "How often do committees meet"
 
 label var cab_follow "Facility follows up on discussions in the last meeting"
 label var regular_attend "Have a regular community member in staff meeting"
 label var share_info "Shared performance with the community in the past 12 months"
 label var how_share "How to share performance info"
-*label var how_share_other "Please specify other"
 label var opinion_drive "Patients’ opinions drive change"
-*label var phc_doctors "Doctors present today"
-*label var phc_nurses "Nurses and midwives present today"
-*label var phc_assistants "Medical assistants present today"
-*label var phc_pharms "Pharmacists present today" 
-*label var phc_others "Other medical staff present today"
 label var ambulance "Ambulance available today"
 label var fuel "Fuel available today"
 label var adult_scale "Adult weighing scale available today"
@@ -859,13 +793,10 @@ label var thermom_func "Thermometer functioning properly"
 label var steth "Stethoscope available today"
 label var steth_func "Stethoscope functioning properly"
 label var sterilize_equip_cc "Sterilization equipment available and functioning"
-*label var non_elec_equip "Non-electric sterilization equipment"
 label var drugs_avail "The following non-expired drugs available today"
 label var single_record "Patient has unique health record"
 label var record_format "Format of health record" 
-*label var record_format_other "Please specify other"
 label var record_describe "Format of health record"
-*label var record_describe_other "Please specify other"
 label var fees_displayed "User fees displayed"
 label var fees_exempt "Who are exempt from paying users fees"
 label var annual_budget "Has annual budget for running costs"
@@ -877,7 +808,6 @@ label var nhis_approved "Facility is NHIS approved"
 label var reimburse_unit "Time length to receive reimbursements for NHIS claims"
 label var record_describe "Describe the format of health records"
 
-***variables added on R6
 label var sdp_goals "Facility has goal for service delivery"
 label var sdp_goals_who "Who determined facility goals"
 label var sdp_goals_obs "Can I see documentation of goals" 
@@ -925,8 +855,6 @@ label variable startSIF "SDP interview start time (SIF)"
 label variable start "SDP interview start time (string)"
 label variable endSIF "SDP interview end time (SIF)"
 label variable end "SDP interview end time (string)"
-*label variable SubmissionDateSIF "Date and time of SDP submission (SIF)"
-*label variable SubmissionDate "Date and time of SDP submission (string)"
 label variable system_date "Current date & time (string)"
 label variable system_dateSIF "Current date & time (SIF)"
 label variable today "Date of interview (string)"
