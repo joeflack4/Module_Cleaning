@@ -5,45 +5,12 @@
 *  CREATED:		Linnea Zimmerman (lzimme12@jhu.edu)
 *  DATA IN:		CCRX_Combined_$date.dta
 *  DATA OUT:	CCRX_Combined_$date.dta
-*  UPDATES:		2 Dec 2015 - Linnea Zimmerman - added question labels
-*				18 Feb 2016 - LZ - updated for changes made in Niger R2
-*				25 May 2016 - LZ - updated to correct mistake between paper and toilet_paper
-*				26 Aug 2016 - LZ - updated destring num_mhm_facilities to destring
-*				20 Oct 2016 - LZ - added yes_no_dnk_nr_list
-*				08 Nov 2017 – v10 – BL	mhm_facilities & num_mhm_facilities dropped
-*										mhm_main choices changed
-*										mhm_materials choices changed
-*										mhm_wishlist dropped
-*										mhm_work_yn mhm_work_missed mhm_school_yn mhm_school_missed added
-*										Country Specific first_menstruation added
+*  
 *******************************************************************************/
 
-//REVISION: BL v10 08Nov2017 mhm_facilities & num_mhm_facilities dropped
-*capture label var mhm_facilities "The last time you had your period, where were all the places that you changed, washed, dried, or disposed of used sanitary materials? "
-*label var num_mhm_facilities "How many facilities used for mhm"
-*destring num_mhm_facilities, replace
 capture label drop yes_no_dnk_nr_list
 capture label define yes_no_dnk_nr_list -77 "-77" -88 "-88" -99 "-99" 0 "no" 1 "yes"
 
-/*
-foreach x in main_san_facility other_san_facility school_san_facility work_san_facility ///
- public_san_facility no_facility backyard other sleep_area {
-gen mhm_`x'=0 if mhm_facilities!="" & mhm_facilities!="-99"
-replace mhm_`x'=1 if (regexm(mhm_facilities, "`x'"))
-label val mhm_`x' yes_no_dnk_nr_list
-}
-
-replace main_mhm=mhm_facilities if num_mhm_facilities==1
-*/
-//REVISION: BL v10 08Nov2017 mhm_main choices changed
-/*
-capture label define mhm_facilities_list 1 main_san_facility 2 other_san_facility 3 school_san_facility ///
-4 work_san_facility 5 public_san_facility 6 backyard 7 sleep_area 8 no_facility 96 other -99 "-99"
-*/
-*REVISION: AR v12 04Jun2018 correct the label to remove the duplication of "bucket"
-/*capture label define mhm_facilities_list 1 flush 2 vip 3 pit_with_slab 4 pit_no_slab 5 bucket ///
-	6 bucket 7 composting 8 hanging 9 sleep_area 10 backyard 11 bush 12 other -99 "-99"
-*/
 capture label define mhm_facilities_list 1 flush 2 vip 3 pit_with_slab 4 pit_no_slab 5 bucket ///
 	6 composting 7 hanging 8 sleep_area 9 backyard 10 bush 11 other -99 "-99"
 
@@ -66,7 +33,6 @@ capture replace mhmsanfac_`x'=1 if (regexm(san_mhm_conditions, "`x'"))
 capture label val mhmsanfac_`x' yes_no_dnk_nr_list
 }
 
-//REVISION: BL v10 08Nov2017 mhm_materials choices changed
 rename mhm_materials mhm_materials_cc
 label var mhm_materials_cc "During your last menstrual period, what were all the materials that you used to absorb or collect your menstrual blood?"
 split mhm_materials_cc, gen(mhm_materials_cc_)
@@ -76,7 +42,6 @@ foreach var in pad_once pad_multi new_cloth old_cloth cotton_wool diaper tampons
 gen mhmmat_cc_`var'=0 if mhm_materials_cc!="" & mhm_materials_cc!="-99" & mhm_materials_cc!="-77"
 forval y=1/`x' {
 replace mhmmat_cc_`var'=1 if mhm_materials_cc_`y'=="`var'"
-*label val mhmmat_`var' yes_no_dnk_nr_list
 }
 }
 capture drop mhm_materials_cc_*
@@ -96,18 +61,6 @@ replace mhm_disposal_`x'=1 if (regexm(mhm_private_disposal, "`x'"))
 label val mhm_disposal_`x' yes_no_dnk_nr_list
 }
 
-//REVISION: BL v10 08Nov2017 mhm_wishlist dropped
-/*
-label var mhm_wishlist "Are there any resources, materials or changes in your environment that would help you manage your menstrual hygiene that you do not usually have?"
-foreach x in no_needs water soap clean_absorbent privacy safety knowledge ///
-vendor dry_spot disposal money medicine other {
-gen mhmwish_`x'=0 if mhm_wishlist!="" & mhm_wishlist!="-99"
-replace mhmwish_`x'=1 if (regexm(mhm_wishlist, "`x'"))
-label val mhmwish_`x' yes_no_dnk_nr_list
-}
-*/
-
-//REVISION: BL v10 08NOV2017 variables added: mhm_work_yn mhm_work_missed mhm_school_yn mhm_school_missed
 encode mhm_work_yn, gen(mhm_work_ynv2) lab(yes_no_dnk_nr_list)
 	label var mhm_work_ynv2 "Worked outside of the household in last month?"
 	
@@ -120,7 +73,6 @@ encode mhm_school_yn, gen(mhm_school_ynv2) lab(yes_no_dnk_nr_list)
 encode mhm_school_missed, gen(mhm_school_missedv2) lab(yes_no_dnk_nr_list)
 	label var mhm_school_missedv2 "Missed school in last 12 months due to menstrual period"
 
-//REVISION: BL v10 08Nov2017 CountrySpecific first_menstruation added
 capture confirm var first_menstruation
 	if _rc==0 {
 		destring first_menstruation, replace
