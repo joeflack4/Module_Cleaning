@@ -5,18 +5,7 @@
 *  CREATED:		Mridula Shankar (mshanka6@jhmi.edu)
 *  DATA IN:		CCRX_Female_Questionnaire_v#_results.csv
 *  DATA OUT:	
-*  UPDATES:		v2-2018-02-05-sob
-*					Made minor updates to question labels	
-*				v03-16Mar2018-MS
-*					-Defined new country-specific response options. 
-*					-Wrote code to separately clean variables with country-specific responses
-*					-Made minor updates to question labels (limiting to 80 characters) 
-*				v04-28May2018-MS
-*					-Added code for cleaning of Cote d'Ivoire abortion module 
-*					-Changed country-specific identifier to be "$CCRX"
-*					-Modified code for splitting of multiple-option variables so that
-*					denominator for resulting binary y/n vars includes all respondents, 
-*					even those whose response codes are -99, -88 or -77. 
+* 
 ********************************************************************************
 
 * Rename grp variables 
@@ -39,8 +28,6 @@ label var friend2_school 			"Highest level of school attended by friend 2"
 label var abt_common				"How common abortion is in community"
 
 capture label var abt_ways			"Ways that women can remove a pregnancy in community"
-
-* REVISION v04 28May2018 MS: Two variables below added for cleaning of Cote d'Ivoire dataset 
 capture label var abt_ways_1		"Ways that women can remove a pregnancy in place where respondent lives"
 capture label var abt_ways_2		"What can a woman do to remove a pregnancy in place where respondent lives"
 
@@ -122,8 +109,7 @@ label var self_reg_last_where		"Self: Final location of surgical procedure for p
 label var self_reg_last_meds		"Self: Final location where medicines obtained for period regulation"
 label var self_reg_issues			"Received treatment in health facility for issues with period regulation"
 label var self_reg_confidant		"Self: Told the following people about period regulation experience"
-
-* REVISION v04 28May2018 MS: Four variables below added for cleaning of Cote d'Ivoire dataset  
+ 
 capture label var why_abt_last		"Motivating reasons for removing pregnancy the last time" 
 capture label var abt_other_yn		"Besides the last time, removed other pregnancies?" 
 capture label var abt_other_count	"Number of times removed pregnancies besides the last time"
@@ -137,8 +123,7 @@ label var abt_shame					"A woman who removes a pregnancy brings shame to her fam
 label var abt_silence				"A woman who removes a pregnancy should not tell anyone"	
 capture label var abt_legal			"Are there circumstances when removing a pregnancy is legal in India?"
 capture label var abt_reg_same		"Do you think removal of pregnancy and period regulation are the same thing?"
-
-* REVISION v04 28May2018 MS: Three variables below added for cleaning of Cote d'Ivoire dataset 
+ 
 capture label var abt_incest 		"Acceptable to remove a pregnancy if it occurs as a result of incest"
 capture label var abt_law			"Know if there is a law on abortion in Cote d'Ivoire"
 capture label var abt_legal 		"Are there instances when it is legal to have an abortion in Cote d'Ivoire"
@@ -183,7 +168,6 @@ capture encode `var', gen(`var'v2) lab(agree_list)
 label define agree_list 1 "Strongly agree" 2 "Agree" 3 "Neither agree nor disagree" 4 "Disagree" ///
 5 "Strongly disagree" -99 "-99", replace 
 
-* REVISION v04 28May2018 MS: Modified code below so that denominator for binary vars includes all respondents
 capture {
 split self_abt_confidant, gen(self_abt_conf_)
 local x=r(nvars)
@@ -199,7 +183,6 @@ capture drop self_abt_conf_*
 order self_abt_tell_*, after(self_abt_confidant)
 }
 
-* REVISION v04 28May2018 MS: Modified code below so that denominator for binary vars includes all respondents
 capture {
 split self_reg_confidant, gen(self_reg_conf_)
 local x=r(nvars)
@@ -216,7 +199,6 @@ order self_reg_tell_*, after(self_reg_confidant)
 }
 
 * Variables with response options specific to India
-* REVISION v04 28May2018 MS: Modified if/else statement using "$CCRX" as the country-specific identifier 
 if "$CCRX"=="RJR4"  {
 
 capture label define school_list 1 never 2 primary 3 secondary 4 higher 5 postgrad -99 "-99"
@@ -259,7 +241,6 @@ label define providers_list 1 "Govt./Municipal Hospital" 2 "Govt. Dispensary" 3 
 17 "Pharmacy/Drugstore" 18 "Dai (TBA)" 19 "Shop" 20 "Friend / parent / relative" 21 "Other" ///
 -88 "-88" -99 "-99", replace 
 
-* REVISION v04 28May2018 MS: Modified code below so that denominator for binary vars includes all respondents
 split abt_ways, gen(abt_opt_)
 local x=r(nvars)
 foreach var in surgery pills_abortion pills_fever pills_oth herbs bleach insert other {
@@ -272,8 +253,6 @@ label val abt_ways_`var' yes_no_dnk_nr_list
 order abt_ways_*, after(abt_ways)
 capture drop abt_opt_*
 
-
-* REVISION v04 28May2018 MS: Modified code below so that denominator for binary vars includes all respondents
 split abt_surg_where, gen(abt_surg_opt_)
 local x=r(nvars)
 foreach var in govt_hosp govt_disp uhp chc anm mobile_clinic_public camp icds asha ///
@@ -287,8 +266,6 @@ label val abt_surg_`var' yes_no_dnk_nr_list
 }
 capture drop abt_surg_opt_*
 
-
-* REVISION v04 28May2018 MS: Modified code below so that denominator for binary vars includes all respondents
 split abt_meds_where, gen(abt_meds_opt_)
 local x=r(nvars)
 foreach var in govt_hosp govt_disp uhp chc anm mobile_clinic_public camp icds asha ///
@@ -303,7 +280,6 @@ label val abt_meds_`var' yes_no_dnk_nr_list
 capture drop abt_meds_opt_*
 
 
-* REVISION v04 28May2018 MS: Removed encoding of variable abt_reg_same as it doesn't exist in dataset
 encode abt_legal, gen(abt_legalv2) lab(yes_no_dnk_nr_list)
 
 						
@@ -405,7 +381,6 @@ label define providers_list 1 "Government Hospital" 2 "Government Health Center"
 8 "Chemist/PMS Store" 9 "Private doctor or nurse" 10 "Mobile clinic (private)" 11 "TBA/Fieldworker (private)" ///
 12 "Shop" 13 "FBO/Church" 14 "Friend / relative" 15 "NGO" 16 "Market / hawking" 17 "Other" -88 "-88" -99 "-99", replace
 
-*R EVISION v04 28May2018 MS: Modified code below so that denominator for binary vars includes all respondents
 split abt_ways, gen(abt_opt_)
 local x=r(nvars)
 foreach var in surgery pills_abortion pills_fever pills_ec pills_oth injection herbs ///
@@ -419,8 +394,6 @@ label val abt_ways_`var' yes_no_dnk_nr_list
 order abt_ways_surgery-abt_ways_other, after(abt_ways)
 capture drop abt_opt_*
 
-
-* REVISION v04 28May2018 MS: Modified code below so that denominator for binary vars includes all respondents
 split abt_surg_where, gen(abt_surg_opt_)
 local x=r(nvars)
 foreach var in govt_hosp govt_health_center FP_clinic mobile_clinic_public fieldworker_public ///
@@ -435,7 +408,6 @@ label val abt_surg_`var' yes_no_dnk_nr_list
 order abt_surg_govt_hosp-abt_surg_other, after(abt_surg_where)
 capture drop abt_surg_opt_*
 
-* REVISION v04 28May2018 MS: Modified code below so that denominator for binary vars includes all respondents
 split abt_meds_where, gen(abt_meds_opt_)
 local x=r(nvars)
 foreach var in govt_hosp govt_health_center FP_clinic mobile_clinic_public fieldworker_public ///
@@ -502,7 +474,6 @@ label var abt_meds_other					"Locations for obtaining medication to remove a pre
 
  }  /// Cleaning of Nigeria-specific response options ends here. 
  
-* REVISION v04 28May2018 MS: Added code below for cleaning of CIR2 abortion module 
 * Variables with response options specific to Cote d'Ivoire 
 else if "$CCRX"=="CIR2" {
 
@@ -586,7 +557,6 @@ label val abt_surg_`var' yes_no_dnk_nr_list
 order abt_surg_govt_hosp-abt_surg_other, after(abt_surg_where)
 capture drop abt_surg_opt_*
 
-*abt_meds_where
 split abt_meds_where, gen(abt_meds_opt_)
 local x=r(nvars)
 foreach var in govt_hosp govt_health_center FP_clinic mobile_clinic_public other_public ///
