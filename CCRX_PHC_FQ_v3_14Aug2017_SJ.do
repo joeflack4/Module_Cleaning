@@ -11,9 +11,7 @@ numlabel, add
 *PURPOSE:  Label destring and enconde PHC questions
 *DATA IN:  CCRX_Combined_$date.dta
 *DATA OUT: CCRX_Combined_$date.dta
-
-*Aug 26 2016 shorten all var labels, commented multe-select cleaning questions for later
-*v3 - Aug 14 2017 update based on ODK changes for GHR6 PHC FQ questions
+*
 ******************************************************************************* 
 
 /**********************************************************
@@ -22,7 +20,7 @@ clear
 insheet using "C:\Users\Shulin\Dropbox (Gates Institute)\Monitor GHR6\test data\GHR6_Female_Questionnaire_v10.csv"
 **********************************************************/
 
-//REVISION: SJ v3 rename vars that are nested in groups
+*Rename group variables
 rename impressions_1_grpimpr_* *
 rename impressions_2_grpimpr_* *
 rename impressions_3_grpimpr_* *
@@ -34,7 +32,7 @@ rename affordability_grp* *
 rename hc_gen1_grp* *
 rename hc_gen2_grp* *
 
-//REVISION: SJ v3 some name typos in ODK need to be changed to match previous version
+*Correct variable names to match previous rounds
 rename wait_ratin wait_rating
 rename clean_rati clean_rating
 rename trust_skil trust_skills
@@ -45,7 +43,6 @@ rename provider_c provider_choice
 rename overall_ef overall_efficacy
 
 * Label all variables in PHC
-//REVISION: SJ v3 vars added on R6 PHC
 label var health_rating "Rate your health condition"
 label var mental_health_rating "Rate your mental health condition"
 label var closest_facility_yn "Is this facility the closest"
@@ -58,8 +55,6 @@ label var privacy "Talk privately to providers"
 label var provider_choice "Easy to see a provider you are happy with"
 label var overall_efficacy "Overall rating of care received"
 label var hc_overall_view "Your overall view of health care system"
-
-*****existing variables in GHR5
 label var rec_visit "Visited health facility in last 6 months"
 label var not_rec_visit "Why not visit health facility in last 6 months"
 capture label var not_rec_visit_other "Other reason if not visiting health facility"
@@ -92,7 +87,6 @@ label var insurance_paid "Cost lowered due to insurance"
 label var amount_paid "Amount paid out of pocket"
 label var pay_rating "Pay for visit easy or difficult"
 label var borrow "Borrow money or sell things to afford the costs of this visit"
-*label var survey_language "In what language was this interview conducted?"
 
 capture label define yes_no_dnk_nr_list 0 "no" 1 "yes" -88 "-88" -99 "-99"
 
@@ -104,9 +98,7 @@ foreach var in rec_visit borrow insurance insurance_paid closest_facility_yn {
 encode `var',gen(`var'n2) lab(yes_no_dnk_nr_list)
 }
 
-*Save all multi-select questions to clean later
-
-//REVISION: SJ v3: closest_facility_why_not added in R6
+*Save all multiple select questions to clean later
 rename closest_facility_why_not closest_whynot
 split closest_whynot, gen(closest_whynot_)
 local y=r(nvars)
@@ -171,14 +163,6 @@ forval x=1/`y' {
 drop care_reason_`x'
 }
 
-/* wrong codes for facility
-label define facility_type_list 1 "hosp" 2 "center" 3 "post" 4 "chps" 5 "fp_clinic" 6 "mobile_clinic" 7 "private_clinic" ///
-8 "private_doc" 9 "pharm" 10 "store" 11 "ppag" 12 "maternity" 13 "ngo" 14 "herbal" 15 "other" -88 "-88" -99 "-99" 
-encode facility, gen(facilityn2) lab(facility_type_list) 
-label define facility_type_list 1 "Govt. Hospital/polyclinic" 2 "Govt. Health center" 3 "Govt. Health post" 4 "CHPS" 5 "Family planning clinic" ///
-6 "Mobile Clinic" 7 "Private Hospital/Clinic" 8 "Private Doctor" 9 "Private Pharmacy" 10 "Chemical/drug Store" 11 "FP/PPAG Clinic" ///
-12 "Maternity Home" 13 "NGO" 14 "Herbal Clinic" 15 "Other" -88 "-88" -99 "-99", replace 
-*/
 
 * clean the response of facility first and then code
 label define phc_facility_type_list 11 "hosp" 12 "center" 13 "post" 10 "chps" 14 "fp_clinic" 15 "mobile_clinic" 21 "private_clinic" ///
@@ -216,7 +200,7 @@ label define wait_rating_list 1 "unbearable" 2 "very_long" 3 "long" 4 "little_lo
 encode wait_rating, gen(wait_ratingn2) lab(wait_rating_list) 
 
 label define excellent_5_top_list 1 "excellent" 2 "very_good" 3 "good" 4 "fair" 5 "poor" -99 "-99"
-//REVISION: SJ v3 added vars in R6
+
 foreach var in clean_rating health_rating mental_health_rating listened skills ///
 time_with_provider involvement privacy provider_choice overall_efficacy {
 encode `var', gen(`var'n2) lab(excellent_5_top_list) 
@@ -239,9 +223,6 @@ encode recommend, gen(recommendn2) lab(likely_4_top_list)
 
 encode pay_rating, gen(pay_ratingn2) lab(difficult_4_bot_list)
 
-*label define language_list 1 "english" 2 "akan" 3 "ga" 4 "ewe" 5 "nzema" 6 "dagbani" 7 "other"
-*encode survey_language, gen(survey_languagen2) lab(language_list)
-//REVISION: SJ v3 added in GHR6
 label define hc_overall_view_list 1 "unfavorable" 2 "relatively_neutral" 3 "favorable"
 encode hc_overall_view, gen(hc_overall_viewn2) lab(hc_overall_view_list)
 
@@ -271,7 +252,6 @@ rename *n2 *
 drop *HC
 
 drop visit_factor_choices time_wait_label
-*phc_opening_note last_time_note
 destring time_wait_int, replace
 destring amount_paid, replace
 
@@ -281,5 +261,3 @@ destring amount_paid, replace
 ********************************************************************************
 
 save, replace
-
-*save "`CCRX'_Combined_$date.dta", replace
