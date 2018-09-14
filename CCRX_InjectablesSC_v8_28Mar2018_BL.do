@@ -5,15 +5,7 @@
 *  CREATED:		Linnea Zimmerman (linnea.zimmerman@jhu.edu)
 *  DATA IN:		CCRX_Combined_NONAME_ECRECODE_$date.dta
 *  DATA OUT:	CCRX_Combined_NONAME_ECRECODE_$date.dta
-*  UPDATES:		For Burkina Round 4, -99 was coded as no_response. Modified label to adjust 
-				Updated replace pattern to use subinstr rather than replacement if multiple 
-				methods selected
-				v5- HC- *v2 renamed to * 3/3/2017
-				v6- LZ- 03/6/2017 - reclassify injectable users who say "both" as 
-				current or recent SP users
-				v7 - LZ-05/08/2017 only labels and destrings.  Does not replace values as sayana press. 
-				Renamed to injectablesSC
-				
+* 				
 *******************************************************************************/
 
 
