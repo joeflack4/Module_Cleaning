@@ -5,15 +5,7 @@
 *  CREATED:		Mridula Shankar (mshanka6@jhmi.edu)
 *  DATA IN:		
 *  DATA OUT:	
-*  UPDATES:		v02-26Mar2018-MS
-*					-Defined country-specific variable names 
-*					-Made minor updates to question labels (limiting to 80 characters)
-*				v03-29May2018_MS
-*					-Added code for cleaning of Cote d'Ivoire SDP abortion module 
-*					-Changed country-specific identifier to be "$CCRX"
-*					-Modified code for splitting of multiple-option variables so that
-*					denominator for resulting binary y/n vars includes all respondents, 
-*					even those whose response codes are -99, -88 or -77. 
+*  
 *******************************************************************************/
 * Rename grp variables 
 rename post_abt_trt_grp* *
@@ -192,8 +184,6 @@ capture encode inpatient_outpatient, gen(inpatient_outpatientv2) lab (inpatient_
 label define inpatient_outpatient_list 1 "Inpatient only" 2 "Outpatient only" 3 "Both" ///
 -88 "-88" -99 "-99", replace 
 
-
-*REVISION v03 29May2018 MS: Modified code below so that denominator for binary vars includes all respondents
 if "$CCRX"=="RJR4" | "$CCRX"=="NGR5" {
 
 capture {
